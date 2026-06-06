@@ -1,0 +1,53 @@
+import { Outfit } from 'next/font/google';
+import './globals.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '../lib/site';
+
+const outfit = Outfit({ 
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+export const metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} – Illustrated Short Stories`,
+    template: `%s – ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#020617',
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" className={outfit.variable}>
+      <body className="flex min-h-screen flex-col">
+        <Header />
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+          {children}
+        </main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
