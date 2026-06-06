@@ -149,7 +149,7 @@ Render provides a completely free tier for web services. To make this 1-click, w
 1. Push this code to a new GitHub repository.
 2. Go to [Render](https://dashboard.render.com/) and sign up.
 3. Click "New" -> "Blueprint".
-4. Connect your GitHub repository. Since `render.yaml` is in the backend folder, you may need to specify the blueprint path as `backend/render.yaml` if Render doesn't detect it automatically.
+4. Connect your GitHub repository. Render will automatically detect the `render.yaml` file.
 5. Fill in the required environment variables in the Render dashboard:
    - `CORS_ORIGINS` – your deployed frontend URL (e.g., `https://your-site.vercel.app`).
    - `PUBLIC_BASE_URL` – the `.onrender.com` URL Render gives your backend.
