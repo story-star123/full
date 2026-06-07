@@ -42,6 +42,9 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={outfit.variable}>
+      <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4478096228997822" crossOrigin="anonymous"></script>
+      </head>
       <body className="flex min-h-screen flex-col">
         <Header />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
