@@ -65,7 +65,7 @@ function splitSections(markdown) {
 }
 
 function imageUrl(slug, filename) {
-  return `${config.publicBaseUrl}/api/stories/${encodeURIComponent(slug)}/images/${encodeURIComponent(filename)}`;
+  return `/api/stories/${encodeURIComponent(slug)}/images/${encodeURIComponent(filename)}`;
 }
 
 function buildStory(folderName, { withContent }) {

@@ -5,8 +5,11 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Clock, User } from 'lucide-react';
 import { formatDate } from '../lib/site';
+import { getAbsoluteImageUrl } from '../lib/api';
 
 export default function StoryCard({ story }) {
+  const imageUrl = getAbsoluteImageUrl(story.featuredImage);
+
   return (
     <motion.article 
       whileHover={{ y: -5 }}
@@ -16,9 +19,9 @@ export default function StoryCard({ story }) {
       className="group flex flex-col overflow-hidden rounded-2xl glass transition-all hover:border-brand-500/50 hover:shadow-[0_0_30px_rgba(20,184,166,0.15)]"
     >
       <Link href={`/story/${story.slug}`} className="relative block aspect-[3/2] overflow-hidden bg-secondary">
-        {story.featuredImage ? (
+        {imageUrl ? (
           <Image
-            src={story.featuredImage}
+            src={imageUrl}
             alt={story.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

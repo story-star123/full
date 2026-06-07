@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getStory } from '../../../lib/api';
+import { getStory, getAbsoluteImageUrl } from '../../../lib/api';
 import { AdInline, AdSidebar } from '../../../components/Ads';
 import { canonical, formatDate, SITE_NAME } from '../../../lib/site';
 
@@ -10,6 +10,7 @@ export async function generateMetadata({ params }) {
   try {
     const { data: story } = await getStory(params.slug);
     const url = canonical(`/story/${story.slug}`);
+    const featuredImageUrl = getAbsoluteImageUrl(story.featuredImage);
     return {
       title: story.title,
       description: story.description,
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }) {
         description: story.description,
         url,
         siteName: SITE_NAME,
-        images: story.featuredImage ? [{ url: story.featuredImage }] : [],
+        images: featuredImageUrl ? [{ url: featuredImageUrl }] : [],
         publishedTime: story.uploadDate,
         authors: [story.author],
       },
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }) {
         card: 'summary_large_image',
         title: story.title,
         description: story.description,
-        images: story.featuredImage ? [story.featuredImage] : [],
+        images: featuredImageUrl ? [featuredImageUrl] : [],
       },
     };
   } catch {
@@ -47,7 +48,7 @@ export default async function StoryPage({ params }) {
   if (!story) notFound();
 
   const sections = story.sections || [];
-  const images = story.images || [];
+  const images = story.images?.map(getAbsoluteImageUrl) || [];
 
   const jsonLd = {
     '@context': 'https://schema.org',

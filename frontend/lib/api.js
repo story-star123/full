@@ -31,4 +31,10 @@ export async function searchStories(q) {
   return api(`/api/search?q=${encodeURIComponent(q)}`, { revalidate: 0 });
 }
 
+export function getAbsoluteImageUrl(path) {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `${API_BASE}${path}`;
+}
+
 export { API_BASE };
