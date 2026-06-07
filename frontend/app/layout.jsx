@@ -44,6 +44,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={outfit.variable}>
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4478096228997822" crossOrigin="anonymous"></script>
+        <script src="https://pl29665113.effectivecpmnetwork.com/c9/5c/dc/c95cdc9ae474504f7aff4e5a25d2d8a4.js"></script>
       </head>
       <body className="flex min-h-screen flex-col">
         <Header />
