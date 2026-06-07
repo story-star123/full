@@ -120,7 +120,7 @@ export default async function StoryPage({ params }) {
         </div>
       </article>
 
-      <div className="w-full lg:w-80 lg:flex-shrink-0">
+      <div className="w-full lg:w-56 lg:flex-shrink-0">
         <AdSidebar />
       </div>
     </div>

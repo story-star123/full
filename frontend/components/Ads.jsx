@@ -1,31 +1,48 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
 const SMARTLINK_URL =
   'https://www.effectivecpmnetwork.com/m9yx2k2y?key=e2b02fca771f71f52befc6297ce7f469';
 
-const DISPLAY_KEY = '2583f5f13d714ffc8be10c310970b8ea';
 const NATIVE_ID = '6d633b2313420b687c769f65b39be21b';
 
-const displayAdDocument = `
+const UNITS = {
+  banner: { key: '2583f5f13d714ffc8be10c310970b8ea', width: 468, height: 60 },
+  sidebarSmall: { key: 'cc736032401f2d96a106a326c1f23852', width: 160, height: 300 },
+  sidebarTall: { key: 'a36cd7ed43758679758c2d7da42541cd', width: 160, height: 600 },
+  mobile: { key: '798b75fbe3c193a57d91fabce071123c', width: 320, height: 50 },
+  leaderboard: { key: '0cbec3572fe545d32dfe00f0aee19673', width: 728, height: 90 },
+  rectangle: { key: '803ae6bfa9c0cea6f6eeeeec68041dd5', width: 300, height: 250 },
+};
+
+const frameSandbox =
+  'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation';
+
+function createDisplayDocument({ key, width, height }) {
+  return `
 <!doctype html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      html, body { margin: 0; width: 468px; height: 60px; overflow: hidden; background: transparent; }
+      html, body { margin: 0; width: ${width}px; height: ${height}px; overflow: hidden; background: transparent; }
     </style>
   </head>
   <body>
     <script>
       atOptions = {
-        key: '${DISPLAY_KEY}',
+        key: '${key}',
         format: 'iframe',
-        height: 60,
-        width: 468,
+        height: ${height},
+        width: ${width},
         params: {}
       };
     </script>
-    <script src="https://www.highperformanceformat.com/${DISPLAY_KEY}/invoke.js"></script>
+    <script src="https://www.highperformanceformat.com/${key}/invoke.js"></script>
   </body>
 </html>`;
+}
 
 const nativeAdDocument = `
 <!doctype html>
@@ -43,8 +60,18 @@ const nativeAdDocument = `
   </body>
 </html>`;
 
-const frameSandbox =
-  'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation';
+function useViewportWidth() {
+  const [width, setWidth] = useState(null);
+
+  useEffect(() => {
+    const updateWidth = () => setWidth(window.innerWidth);
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  return width;
+}
 
 function AdLabel() {
   return (
@@ -54,25 +81,41 @@ function AdLabel() {
   );
 }
 
-function DisplayBanner({ className = '' }) {
+function DisplayUnit({ unit, title, eager = false }) {
   return (
-    <aside className={`my-6 ${className}`} aria-label="Advertisement">
-      <div className="hidden sm:block">
-        <AdLabel />
-        <iframe
-          title="Sponsored display advertisement"
-          srcDoc={displayAdDocument}
-          width="468"
-          height="60"
-          loading="lazy"
-          scrolling="no"
-          sandbox={frameSandbox}
-          referrerPolicy="strict-origin-when-cross-origin"
-          className="mx-auto block max-w-full border-0"
-        />
-      </div>
-      <div className="sm:hidden">
-        <SponsoredLink compact />
+    <iframe
+      title={title}
+      srcDoc={createDisplayDocument(unit)}
+      width={unit.width}
+      height={unit.height}
+      loading={eager ? 'eager' : 'lazy'}
+      scrolling="no"
+      sandbox={frameSandbox}
+      referrerPolicy="strict-origin-when-cross-origin"
+      className="block max-w-full border-0"
+    />
+  );
+}
+
+function ResponsiveBanner({ className = '' }) {
+  const viewportWidth = useViewportWidth();
+  const unit =
+    viewportWidth === null
+      ? null
+      : viewportWidth >= 900
+        ? UNITS.leaderboard
+        : viewportWidth >= 520
+          ? UNITS.banner
+          : UNITS.mobile;
+
+  return (
+    <aside
+      className={`my-6 min-h-[76px] rounded-2xl border border-white/5 bg-card/10 px-2 py-3 sm:min-h-[86px] lg:min-h-[116px] ${className}`}
+      aria-label="Advertisement"
+    >
+      <AdLabel />
+      <div className="flex justify-center">
+        {unit && <DisplayUnit unit={unit} title="Sponsored display advertisement" eager />}
       </div>
     </aside>
   );
@@ -80,7 +123,7 @@ function DisplayBanner({ className = '' }) {
 
 function NativeBanner({ className = '' }) {
   return (
-    <aside className={`my-8 ${className}`} aria-label="Advertisement">
+    <aside className={`${className}`} aria-label="Advertisement">
       <AdLabel />
       <iframe
         title="Sponsored recommendations"
@@ -93,6 +136,17 @@ function NativeBanner({ className = '' }) {
         referrerPolicy="strict-origin-when-cross-origin"
         className="block w-full rounded-2xl border border-white/10 bg-card/20"
       />
+    </aside>
+  );
+}
+
+function RectangleBanner({ className = '' }) {
+  return (
+    <aside className={className} aria-label="Advertisement">
+      <AdLabel />
+      <div className="flex justify-center overflow-hidden rounded-2xl border border-white/10 bg-card/20 p-2">
+        <DisplayUnit unit={UNITS.rectangle} title="Sponsored rectangle advertisement" />
+      </div>
     </aside>
   );
 }
@@ -126,11 +180,16 @@ function SponsoredLink({ compact = false, className = '' }) {
 }
 
 export function AdTopBanner() {
-  return <DisplayBanner />;
+  return <ResponsiveBanner />;
 }
 
 export function AdMiddleBanner() {
-  return <NativeBanner />;
+  return (
+    <section className="my-8 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <NativeBanner />
+      <RectangleBanner />
+    </section>
+  );
 }
 
 export function AdBottomBanner() {
@@ -138,9 +197,36 @@ export function AdBottomBanner() {
 }
 
 export function AdSidebar() {
-  return <SponsoredLink className="sticky top-24" />;
+  return (
+    <aside className="hidden lg:block" aria-label="Sidebar advertisements">
+      <div className="flex flex-col items-center gap-8 rounded-3xl border border-white/5 bg-card/10 px-4 py-5">
+        <div>
+          <AdLabel />
+          <DisplayUnit unit={UNITS.sidebarTall} title="Sponsored tall advertisement" />
+        </div>
+        <div>
+          <AdLabel />
+          <DisplayUnit unit={UNITS.sidebarSmall} title="Sponsored sidebar advertisement" />
+        </div>
+        <SponsoredLink compact className="w-full" />
+      </div>
+    </aside>
+  );
 }
 
 export function AdInline({ label = 'inline' }) {
-  return label === 'story-after-image-3' ? <NativeBanner /> : <SponsoredLink />;
+  if (label === 'story-after-image-3') {
+    return (
+      <section className="my-10 grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_320px]">
+        <NativeBanner />
+        <RectangleBanner />
+      </section>
+    );
+  }
+
+  return (
+    <div className="my-10">
+      <ResponsiveBanner className="my-0" />
+    </div>
+  );
 }
