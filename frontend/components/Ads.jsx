@@ -5,60 +5,17 @@ import { useEffect, useState } from 'react';
 const SMARTLINK_URL =
   'https://www.effectivecpmnetwork.com/m9yx2k2y?key=e2b02fca771f71f52befc6297ce7f469';
 
-const NATIVE_ID = '6d633b2313420b687c769f65b39be21b';
-
 const UNITS = {
-  banner: { key: '2583f5f13d714ffc8be10c310970b8ea', width: 468, height: 60 },
-  sidebarSmall: { key: 'cc736032401f2d96a106a326c1f23852', width: 160, height: 300 },
-  sidebarTall: { key: 'a36cd7ed43758679758c2d7da42541cd', width: 160, height: 600 },
-  mobile: { key: '798b75fbe3c193a57d91fabce071123c', width: 320, height: 50 },
-  leaderboard: { key: '0cbec3572fe545d32dfe00f0aee19673', width: 728, height: 90 },
-  rectangle: { key: '803ae6bfa9c0cea6f6eeeeec68041dd5', width: 300, height: 250 },
+  banner: { id: 'banner', width: 468, height: 60 },
+  sidebarSmall: { id: 'sidebar-small', width: 160, height: 300 },
+  sidebarTall: { id: 'sidebar-tall', width: 160, height: 600 },
+  mobile: { id: 'mobile', width: 320, height: 50 },
+  leaderboard: { id: 'leaderboard', width: 728, height: 90 },
+  rectangle: { id: 'rectangle', width: 300, height: 250 },
 };
 
 const frameSandbox =
-  'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation';
-
-function createDisplayDocument({ key, width, height }) {
-  return `
-<!doctype html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      html, body { margin: 0; width: ${width}px; height: ${height}px; overflow: hidden; background: transparent; }
-    </style>
-  </head>
-  <body>
-    <script>
-      atOptions = {
-        key: '${key}',
-        format: 'iframe',
-        height: ${height},
-        width: ${width},
-        params: {}
-      };
-    </script>
-    <script src="https://www.highperformanceformat.com/${key}/invoke.js"></script>
-  </body>
-</html>`;
-}
-
-const nativeAdDocument = `
-<!doctype html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      html, body { margin: 0; min-height: 100%; overflow: hidden; background: transparent; }
-      #container-${NATIVE_ID} { width: 100%; }
-    </style>
-  </head>
-  <body>
-    <script async data-cfasync="false" src="https://pl29665117.effectivecpmnetwork.com/${NATIVE_ID}/invoke.js"></script>
-    <div id="container-${NATIVE_ID}"></div>
-  </body>
-</html>`;
+  'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation';
 
 function useViewportWidth() {
   const [width, setWidth] = useState(null);
@@ -85,7 +42,7 @@ function DisplayUnit({ unit, title, eager = false }) {
   return (
     <iframe
       title={title}
-      srcDoc={createDisplayDocument(unit)}
+      src={`/ad-frame/${unit.id}`}
       width={unit.width}
       height={unit.height}
       loading={eager ? 'eager' : 'lazy'}
@@ -127,7 +84,7 @@ function NativeBanner({ className = '' }) {
       <AdLabel />
       <iframe
         title="Sponsored recommendations"
-        srcDoc={nativeAdDocument}
+        src="/ad-frame/native"
         width="100%"
         height="280"
         loading="lazy"
