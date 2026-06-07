@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '../lib/site';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const outfit = Outfit({ 
   subsets: ['latin'],
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
           {children}
         </main>
         <Footer />
+        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
       </body>
     </html>
   );
