@@ -21,6 +21,7 @@ body {
 .glass {
   @apply bg-card/40 backdrop-blur-md border border-white/10 shadow-xl;
 }
+
 .glass-panel {
   @apply bg-secondary/60 backdrop-blur-lg border border-white/5;
 }
@@ -31,6 +32,7 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -41,10 +43,17 @@ body {
 .prose-story p {
   @apply mb-4 leading-relaxed text-foreground/80;
 }
+
 .prose-story h1,
 .prose-story h2,
 .prose-story h3 {
   @apply mb-4 mt-6 font-bold text-white;
 }
-.prose-story h1 { @apply text-2xl tracking-tight; }
-.prose-story h2 { @apply text-xl tracking-tight; }
+
+.prose-story h1 {
+  @apply text-2xl tracking-tight;
+}
+
+.prose-story h2 {
+  @apply text-xl tracking-tight;
+}
